@@ -38,7 +38,8 @@ func handler(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	resp := play(v)
+	//	resp := play(v)   // action happen here
+	resp := actiononedge(nextDirection)
 	fmt.Fprint(w, resp)
 }
 
@@ -48,4 +49,34 @@ func play(input ArenaUpdate) (response string) {
 	commands := []string{"F", "R", "L", "T"}
 	rand := rand2.Intn(4)
 	return commands[rand]
+}
+
+func actiononedge (input ArenaUpdate, input PlayerState) ( return nextDirection string) {
+	player := PlayerState{}
+	arena  := ArenaUpdate{}	
+	log.Printf("IN: %#v", input) // log only
+
+	if ( player.X == 0 && player.y == 0 ){
+	return "R"
+	}
+	else if ( player.X == 0 && player.y == arena.dimension[1]){
+	commands := []string{"L", "T"}
+	rand := rand2.Intn(2)
+	return commands[rand]
+	}
+	else if ( player.Y == arena.dimension[1] && player.X == arena.dimension[0]){
+		commands := []string{"F", "L", "T"}
+		rand := rand2.Intn(3)
+		return commands[rand]
+	}
+	else if ( player.Y == 0] && player.X == arena.dimension[0]){
+		commands := []string{"F", "R", "T"}
+		rand := rand2.Intn(3)
+		return commands[rand]
+	}
+	else {
+		commands := []string{"F", "R", "L", "T"}
+		rand := rand2.Intn(4)
+		return commands[rand]
+	}
 }
