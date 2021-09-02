@@ -29,6 +29,14 @@ func handler(w http.ResponseWriter, req *http.Request) {
 	}
 
 	var v ArenaUpdate
+	var p PlayerState
+	/*
+		var myx = v.Arena.State["https://cloudbowl-samples-java-quarkus-yngbkt2j3a-uc.a.run.app"].X
+		var myy = v.Arena.State["https://cloudbowl-samples-java-quarkus-yngbkt2j3a-uc.a.run.app"].Y
+		var myd = v.Arena.State["https://cloudbowl-samples-java-quarkus-yngbkt2j3a-uc.a.run.app"].Direction
+		var myh = v.Arena.State["https://cloudbowl-samples-java-quarkus-yngbkt2j3a-uc.a.run.app"].WasHit
+	*/
+	
 	defer req.Body.Close()
 	d := json.NewDecoder(req.Body)
 	d.DisallowUnknownFields()
@@ -38,43 +46,44 @@ func handler(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	//	resp := play(v)   // action happen here
-	resp := actiononedge(nextDirection)
-	fmt.Fprint(w, resp)
+	//resp := play(v) // action happen here
+	resp2 := actiononedge(v, p)
+
+	//	fmt.Fprint(w, resp)
+	fmt.Fprint(w, resp2)
+
 }
 
+/*
 func play(input ArenaUpdate) (response string) {
 	log.Printf("IN: %#v", input)
 
-	commands := []string{"F", "R", "L", "T"}
-	rand := rand2.Intn(4)
+	commands := []string{"F", "R", "L", "T", "T", "T"}
+	rand := rand2.Intn(6)
 	return commands[rand]
 }
+*/
 
-func actiononedge (input ArenaUpdate, input PlayerState) ( return nextDirection string) {
-	player := PlayerState{}
-	arena  := ArenaUpdate{}	
-	log.Printf("IN: %#v", input) // log only
-
-	if ( player.X == 0 && player.y == 0 ){
-	return "R"
-	}
-	else if ( player.X == 0 && player.y == arena.dimension[1]){
-	commands := []string{"L", "T"}
-	rand := rand2.Intn(2)
-	return commands[rand]
-	}
-	else if ( player.Y == arena.dimension[1] && player.X == arena.dimension[0]){
-		commands := []string{"F", "L", "T"}
-		rand := rand2.Intn(3)
+func actiononedge(arena ArenaUpdate, player PlayerState) (response string) {
+	//player :=  PlayerState{}
+	//arena := ArenaUpdate{}
+	log.Printf("IN: %#v", arena) // log only
+	//log.Printf("IN: %#p", player)
+	if player.X == 0 && player.Y == 0 {
+		return "R"
+	} else if player.X == 0 && player.Y == arena.Arena.Dimensions[1] {
+		commands := []string{"L", "T"}
+		rand := rand2.Intn(2)
 		return commands[rand]
-	}
-	else if ( player.Y == 0] && player.X == arena.dimension[0]){
-		commands := []string{"F", "R", "T"}
-		rand := rand2.Intn(3)
+	} else if player.Y == arena.Arena.Dimensions[1] && player.X == arena.Arena.Dimensions[0] {
+		commands := []string{"F", "L", "T", "T"}
+		rand := rand2.Intn(4)
 		return commands[rand]
-	}
-	else {
+	} else if player.Y == 0 && player.X == arena.Arena.Dimensions[0] {
+		commands := []string{"F", "R", "T", "T"}
+		rand := rand2.Intn(4)
+		return commands[rand]
+	} else {
 		commands := []string{"F", "R", "L", "T"}
 		rand := rand2.Intn(4)
 		return commands[rand]
